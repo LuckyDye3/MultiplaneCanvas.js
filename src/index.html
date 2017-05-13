@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="./js/MultiplaneCanvas.js"></script>
+        <script src="./example_scene.js"></script>
+		
+		<script>
+		
+			window.onload = function() {
+
+			var multiplaneCanvas = new MultiplaneCanvas(document.querySelector("canvas"), 60)
+
+			var scene = multiplaneCanvas.scene;
+			var camera = multiplaneCanvas.camera;
+
+			scene.loadFromJson(MultiplaneJsonScene);
+
+			(function preview(){
+				camera.move(-300, 0);
+				setTimeout(function() {
+					camera.move(300, 0);
+				}, 4000)
+				setTimeout(function() {
+					camera.move(700, 0);
+				}, 8000)
+				setTimeout(function() {
+					preview()
+				}, 12000)
+
+			})()
+
+		}
+			
+		</script>
+		
+		<style>
+		
+			.canvas-wrapper {
+				width: 100%;
+				overflow: hidden;
+			}
+
+			.canvas-wrapper canvas {
+				background: skyblue;
+				width: 100%;
+				filter: saturate(0.8) contrast(0.9) brightness(1);
+				margin-bottom: -4px;
+			}
+			
+		</style>
+
+    </head>
+
+    <body>
+
+		<div class="canvas-wrapper">
+			<canvas id="header-canvas" width="1920px" height="800vh"></canvas>
+		</div>
+
+    </body>
+
+</html>
