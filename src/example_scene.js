@@ -1,5 +1,8 @@
 var MultiplaneJsonScene = {
-
+    "camera": {
+        x: -300,
+        y: 500
+    },
     "objects": [
         {
             "scale": 7500,

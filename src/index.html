@@ -11,30 +11,38 @@
 		
 		<script>
 		
+			"use strict";
+
+			var multiplaneCanvas;
+
 			window.onload = function() {
 
-			var multiplaneCanvas = new MultiplaneCanvas(document.querySelector("canvas"), 60)
+				multiplaneCanvas = new MultiplaneCanvas({
+					canvas: document.querySelector("canvas"),
+					fps: 48,
+					reactOnScroll: true,
+					reactOnMouse: true
+				})
 
-			var scene = multiplaneCanvas.scene;
-			var camera = multiplaneCanvas.camera;
+				var camera = multiplaneCanvas.scene.camera;
+				multiplaneCanvas.scene.loadFromJson(MultiplaneJsonScene);
 
-			scene.loadFromJson(MultiplaneJsonScene);
+				var demo = (function(){
 
-			(function preview(){
-				camera.move(-300, 0);
-				setTimeout(function() {
-					camera.move(300, 0);
-				}, 4000)
-				setTimeout(function() {
-					camera.move(700, 0);
-				}, 8000)
-				setTimeout(function() {
-					preview()
-				}, 12000)
+					camera.move(-300, 0);
+					setTimeout(function() {
+						camera.move(300, 0);
+					}, 4000)
+					setTimeout(function() {
+						camera.move(700, 0);
+					}, 8000)
+					setTimeout(function() {
+						demo()
+					}, 12000)
 
-			})()
+				})()
 
-		}
+			}
 			
 		</script>
 		
