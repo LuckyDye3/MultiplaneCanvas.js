@@ -8,7 +8,8 @@ function MultiplaneCanvas(args) {
 	var canvas = args.canvas || document.querySelector("canvas");
 	var context = canvas.getContext("2d");
 
-	this.scene = new MultiplaneCanvas.Scene(canvas.width, canvas.height, context);
+	this.waitForAssets = args.waitForAssets || true;
+	this.scene = new MultiplaneCanvas.Scene(canvas.width, canvas.height, context, this.waitForAssets);
 	this.reactOnScroll = args.reactOnScroll || false;
 	this.reactOnMouse = args.reactOnMouse || false;
 
@@ -17,20 +18,18 @@ function MultiplaneCanvas(args) {
 
 	var onMouseOver = function(e) {
 		if(this.reactOnMouse) {
-			var x = (e.clientX * -1 + (canvas.width/2)) * 0.15;
-			var y = (e.clientY * -1 + (canvas.height/2)) * 0.15;
+			var x = -(e.clientX - (canvas.clientWidth/2)) * 0.15;
+			var y = -(e.clientY - (canvas.clientHeight/2)) * 0.2;
 			camera.adjust(x, y);
 		}
 	}
-
 	canvas.addEventListener("mousemove", onMouseOver.bind(this))
 
 	var onScroll = function(e) {
 		if(this.reactOnScroll) {
-			camera.adjust(0, window.scrollY/5);
+			camera.adjust(0, -window.scrollY/2);
 		}
 	}
-
 	window.addEventListener("scroll", onScroll.bind(this))
 
 	function render() {
@@ -56,13 +55,13 @@ function MultiplaneCanvas(args) {
 	animate()
 }
 
-MultiplaneCanvas.Scene = function(w, h, context) {
+MultiplaneCanvas.Scene = function(w, h, context, cache) {
 
 	this.camera = new MultiplaneCanvas.Camera();
-	this.context = context;
+	this.context = context || {};
 	this.canvas = this.context.canvas;
-
-	var geo = [];
+	this.cacheScene = cache || false;
+	this.planes = [];
 
 	var axis;
 	this.setAxis = function(w, h) {
@@ -70,17 +69,17 @@ MultiplaneCanvas.Scene = function(w, h, context) {
 	}
 	this.setAxis(w, h)
 
+	var cached = false;
+
 	this.render = function() {
+		if(cached || !this.cacheScene) {
 
-		this.camera.update()
-
-		for( var obj of geo) {
-			if(obj.visible) {
+			for( var obj of this.planes) {
 
 				this.context.globalAlpha = obj.alpha;
 
-				var x = axis.x + obj.position.x + this.camera.position.x * (obj.position.z);
-				var y = axis.y + obj.position.y + this.camera.position.y * (obj.position.z);
+				var x = axis.x + obj.position.x + this.camera.getPosition().x * (obj.position.z);
+				var y = axis.y + obj.position.y + this.camera.getPosition().y * (obj.position.z);
 
 				switch (obj.type) {
 					case "ImagePlane":
@@ -90,22 +89,35 @@ MultiplaneCanvas.Scene = function(w, h, context) {
 						this.context.fillStyle = obj.color;
 						this.context.fillRect(x, y, obj.width, obj.height);
 				}
+			}
 
+			this.camera.update()
+
+		} else {
+			this.isCached();
+		}
+	}
+
+	this.isCached = function() {
+		var results = false;
+		for( var obj of this.planes) {
+			if(!obj.cached) {
+				return false;
 			}
 		}
-
+		cached = true;
+		return results;
 	}
 
 	this.add = function(obj) {
-		geo.push(obj)
+		this.planes.push(obj)
 	}
 
 	this.loadFromJson = function(jsonScene) {
 		var objects = jsonScene.objects;
 		var camera = jsonScene.camera;
 		if(camera) {
-			this.camera.position.x = camera.x;
-			this.camera.position.y = camera.y;
+			this.camera.setPosition(camera.x, camera.y)
 		}
 		for( var obj of objects ) {
 			var pos = obj.position;
@@ -120,7 +132,7 @@ MultiplaneCanvas.ImagePlane = function(x, y, z, scale, img, alpha) {
 
 	this.type = "ImagePlane";
 
-	this.visible = false;
+	this.position = new MultiplaneCanvas.Vector(0,0,0);
 
 	this.color = "green";
 	this.alpha = alpha || 1;
@@ -128,54 +140,65 @@ MultiplaneCanvas.ImagePlane = function(x, y, z, scale, img, alpha) {
 	this.image = new Image();
 	this.image.src = img;
 
+	this.cached = false;
+
 	this.image.onload = (function() {
 
+		z = z / 100;
+
 		this.scale = scale;
-		this.aspect_ratio = this.image.width / this.image.height;
+		var aspect_ratio = this.image.width / this.image.height;
 
 		this.width = (this.scale * z);
-		this.height = (this.scale * z) / this.aspect_ratio;
+		this.height = (this.scale * z) / aspect_ratio;
 
-		this.position = new MultiplaneCanvas.Vector(x - (this.width/2), y - (this.height/2), z);
+		this.position.x = x - (this.width/2);
+		this.position.y = y - (this.height/2);
+		this.position.z = z;
 
-		this.visible = true;
+		this.cached = true;
 
 	}).bind(this)
 }
 
-MultiplaneCanvas.Camera = function(x, y) {
+MultiplaneCanvas.Camera = function(x, y, z) {
 
-	this.position = new MultiplaneCanvas.Vector(x || 0, y || 0, 0)
+	var position = new MultiplaneCanvas.Vector(x || 0, y || 0, z || 0)
+	var force = new MultiplaneCanvas.Vector(0, 0, 0);
 
-	this.nextPosition = new MultiplaneCanvas.Vector(0, 0, 0)
-	this.lastPosition = new MultiplaneCanvas.Vector(0, 0, 0)
+	var nextPosition = new MultiplaneCanvas.Vector(0, 0, 0)
+	var lastPosition = new MultiplaneCanvas.Vector(0, 0, 0)
 
-	this.force = new MultiplaneCanvas.Vector(0, 0, 0);
-
-	this.updateCylce = 0;
 	this.update = function() {
 
-		var distX = this.nextPosition.x - this.lastPosition.x;
-		var distY = this.nextPosition.y - this.lastPosition.y;
+		var distX = nextPosition.x - lastPosition.x;
+		var distY = nextPosition.y - lastPosition.y;
 
-		this.position.x += (distX + this.force.x) / 24;
-		this.position.y += (distY + this.force.y) / 24;
-
-		this.updateCylce++;
+		position.x += (distX + force.x) / 24;
+		position.y += (distY + force.y) / 24;
 	}
 
 	this.move = function(x, y, z) {
 		var x = x || 0;
 		var y = y || 0;
 		var nextPos = new MultiplaneCanvas.Vector(x, y, z)
-		this.lastPosition = this.position;
-		this.nextPosition = nextPos;
+		lastPosition = position;
+		nextPosition = nextPos;
 	}
 
 	this.adjust = function(x, y, z) {
-		this.force.x = x;
-		this.force.y = y;
-		this.force.z = z;
+		force.x = x;
+		force.y = y;
+		force.z = z;
+	}
+
+	this.getPosition = function() {
+		return new MultiplaneCanvas.Vector( position.x, position.y );
+	}
+
+	this.setPosition = function(x, y) {
+		position.x = x;
+		position.y = y;
 	}
 
 }

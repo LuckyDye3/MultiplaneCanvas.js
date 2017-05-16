@@ -13,11 +13,9 @@
 		
 			"use strict";
 
-			var multiplaneCanvas;
-
 			window.onload = function() {
 
-				multiplaneCanvas = new MultiplaneCanvas({
+				var multiplaneCanvas = new MultiplaneCanvas({
 					canvas: document.querySelector("canvas"),
 					fps: 48,
 					reactOnScroll: true,

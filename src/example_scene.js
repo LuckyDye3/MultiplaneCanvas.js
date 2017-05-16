@@ -11,7 +11,7 @@ var MultiplaneJsonScene = {
             "position": {
                 "x": -100,
                 "y": 0,
-                "z": 0.3
+                "z": 30
             }
         },
         {
@@ -21,7 +21,7 @@ var MultiplaneJsonScene = {
             "position": {
                 "x": 200,
                 "y": 300,
-                "z": 0.4
+                "z": 40
             }
         },
         {
@@ -31,7 +31,7 @@ var MultiplaneJsonScene = {
             "position": {
                 "x": 1100,
                 "y": 450,
-                "z": 1.6
+                "z": 160
             }
         },
         {
@@ -41,7 +41,7 @@ var MultiplaneJsonScene = {
             "position": {
                 "x": -700,
                 "y": 100,
-                "z": 0.8
+                "z": 80
             }
         },
         {
@@ -51,7 +51,7 @@ var MultiplaneJsonScene = {
             "position": {
                 "x": -650,
                 "y": 500,
-                "z": 1.5
+                "z": 150
             }
         }
     ]
