@@ -16,6 +16,12 @@ A lightweight JavaScript library for multi layered HTML5 Canvas Animation.
 ### Usage
 ___
 
+Import
+```html
+<script type="text/javascript" src="./path/to/MultiplaneCanvas.js"></script>
+```
+
+Use
 ```javascript
 var multiplaneCanvas = new MultiplaneCanvas({
 	canvas: document.querySelector("canvas"),

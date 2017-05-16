@@ -74,7 +74,8 @@ MultiplaneCanvas.Scene = function(w, h, context, cache) {
 	this.render = function() {
 		if(cached || !this.cacheScene) {
 
-			for( var obj of this.planes) {
+			for( var i = 0; i < this.planes.length; i++ ) {
+				var obj = this.planes[i];
 
 				this.context.globalAlpha = obj.alpha;
 
@@ -100,7 +101,8 @@ MultiplaneCanvas.Scene = function(w, h, context, cache) {
 
 	this.isCached = function() {
 		var results = false;
-		for( var obj of this.planes) {
+		for( var i = 0; i < this.planes.length; i++ ) {
+			var obj = this.planes[i];
 			if(!obj.cached) {
 				return false;
 			}
@@ -119,7 +121,8 @@ MultiplaneCanvas.Scene = function(w, h, context, cache) {
 		if(camera) {
 			this.camera.setPosition(camera.x, camera.y)
 		}
-		for( var obj of objects ) {
+		for( var i = 0; i < objects.length; i++ ) {
+			var obj = objects[i];
 			var pos = obj.position;
 			var imagePlane = new MultiplaneCanvas.ImagePlane(pos.x, pos.y, pos.z, obj.scale, obj.image, obj.alpha);
 			this.add(imagePlane);
