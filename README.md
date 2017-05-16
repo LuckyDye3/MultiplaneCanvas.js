@@ -25,7 +25,7 @@ var multiplaneCanvas = new MultiplaneCanvas({
 })
 ```
 
-To add Planes you can use [.add()](#.add()) or [.loadFromJson()](#.loadFromJson()).
+To add Planes you can use [.add()](#addimageplane) or [.loadFromJson()](#loadfromjsonjsonobject).
 
 * Available Arguments:
     * fps
