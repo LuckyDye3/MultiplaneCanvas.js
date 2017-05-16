@@ -6,12 +6,12 @@ A lightweight JavaScript library for multi layered HTML5 Canvas Animation.
 
 - [Usage](#usage)
 - [Documentation](#documentation)
-	- [MultiplaneCanvas.Scene](#multiplanecanvas.scene)
-    	- [.add()](#.add(imageplane))
-    	- [.loadFromJson()](#.loadfromjson(jsonobject))
-	- [MultiplaneCanvas.Camera](#multiplaneCanvas.camera)
-	- [MultiplaneCanvas.ImagePlane](#multiplaneCanvas.imageplane)
-	- [MultiplaneCanvas.Vector](#multiplaneCanvas.vector)
+	- [MultiplaneCanvas.Scene](#multiplanecanvasscene)
+    	- [.add()](#addimageplane)
+    	- [.loadFromJson()](#loadfromjsonjsonobject)
+	- [MultiplaneCanvas.Camera](#multiplanecanvascamera)
+	- [MultiplaneCanvas.ImagePlane](#multiplanecanvasimageplane)
+	- [MultiplaneCanvas.Vector](#multiplanecanvasvector)
 
 ### Usage
 ___
