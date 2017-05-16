@@ -4,14 +4,14 @@ A lightweight JavaScript library for multi layered HTML5 Canvas Animation.
 
 ## Documentation
 
-- [Usage](#Usage)
-- [Documentation](#Documentation)
-	- [MultiplaneCanvas.Scene](#MultiplaneCanvas.Scene)
-    	- [.add()](#.add())
-    	- [.loadFromJson()](#.loadFromJson())
-	- [MultiplaneCanvas.Camera](#MultiplaneCanvas.Camera)
-	- [MultiplaneCanvas.ImagePlane](#MultiplaneCanvas.ImagePlane)
-	- [MultiplaneCanvas.Vector](#MultiplaneCanvas.Vector)
+- [Usage](#usage)
+- [Documentation](#documentation)
+	- [MultiplaneCanvas.Scene](#multiplanecanvas.scene)
+    	- [.add()](#.add(imageplane))
+    	- [.loadFromJson()](#.loadfromjson(jsonobject))
+	- [MultiplaneCanvas.Camera](#multiplaneCanvas.camera)
+	- [MultiplaneCanvas.ImagePlane](#multiplaneCanvas.imageplane)
+	- [MultiplaneCanvas.Vector](#multiplaneCanvas.vector)
 
 ### Usage
 ___
@@ -43,18 +43,18 @@ ___
 new MultiplaneCanvas.Scene(width, height, context, cache);
 ```
 
-- *__width and height__*\
+- ##### *width and height*
 	Width and height of the canvas.
 
 
-- *__context__*\
+- ##### *context*
 	Canvas context.
     
     
-- *__cache__*\
+- ##### *cache*
 	If the animation should wait for the assets to load.
 
-- __.add(ImagePlane)__\
+- ##### .add(ImagePlane)
   Add Planes to the Scene with a *[MultiplaneCanvas.ImagePlane](#MultiplaneCanvas.ImagePlane)*
 
   ```javascript
@@ -62,7 +62,7 @@ new MultiplaneCanvas.Scene(width, height, context, cache);
   multiplaneCanvas.scene.add(imagePlane);
   ```
   
-- __.loadFromJson(jsonObject)__\
+- ##### .loadFromJson(jsonObject)
   Load a scene from an JsonObject.
 
   ```javascript
@@ -94,8 +94,8 @@ new MultiplaneCanvas.Scene(width, height, context, cache);
   new MultiplaneCanvas.Camera(x, y, z)
   ```
 
-  - *__x, y, z__*:\
-  Postition of the camera.
+  - ##### *x, y, z*
+  	Postition of the camera.
     
 #### MultiplaneCanvas.ImagePlane
 
@@ -103,20 +103,16 @@ new MultiplaneCanvas.Scene(width, height, context, cache);
   new MultiplaneCanvas.ImagePlane(x, y, z, scale, img, alpha)
   ```
 
-  - *__x, y, z__*:
-
+  - ##### *x, y, z*
   	Postition of the Plane.
 
-  - *__scale__*:
-
+  - ##### *scale*
   	Plane scale.
 
-  - *__img__*:
-
+  - ##### *img*
   	Image url.
 
-  - *__alpha (0 - 1)__*:
-
+  - ##### *alpha (0 - 1)*
   	Transparency of the Plane.
     
 #### MultiplaneCanvas.Vector
